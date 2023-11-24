@@ -13,3 +13,14 @@ export const Textarea = ({ id, name, type, value, className = "", placeholder, o
   )
 }
 
+
+export const SelectBox = ({className="",disabled=false,onChange,name,value=""})=>{
+  return <>
+   <select name={name} value={value} 
+   className={`block w-full mt-2 px-3 py-2 text-gray-600 rounded-[4px] border-2 border-gray-100 ${disabled ? "bg-gray-50" : ""}  focus:border-primary transition outline-none hover:border-gray-300 ${className}`} onChange={onChange}>
+    <option value="To Do">To Do</option>
+    <option value ="In Progress">In Progress</option>
+    <option value="Done">Done</option>
+   </select>
+  </>
+}

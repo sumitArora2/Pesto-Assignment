@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Textarea } from '../components/utils/Input';
+import Input, { SelectBox, Textarea } from '../components/utils/Input';
 import Loader from '../components/utils/Loader';
 import useFetch from '../hooks/useFetch';
 import MainLayout from '../layouts/MainLayout';
@@ -17,7 +17,9 @@ const Task = () => {
   const mode = taskId === undefined ? "add" : "update";
   const [task, setTask] = useState(null);
   const [formData, setFormData] = useState({
-    description: ""
+    description: "",
+    title:"",
+    status:""
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -32,7 +34,7 @@ const Task = () => {
       const config = { url: `/tasks/${taskId}`, method: "get", headers: { Authorization: authState.token } };
       fetchData(config, { showSuccessToast: false }).then((data) => {
         setTask(data.task);
-        setFormData({ description: data.task.description });
+        setFormData({ description: data.task.description,title:data.task.title,status:data.task.status });
       });
     }
   }, [mode, authState, taskId, fetchData]);
@@ -48,7 +50,9 @@ const Task = () => {
   const handleReset = e => {
     e.preventDefault();
     setFormData({
-      description: task.description
+      description: task.description,
+      title:task.title,
+      status:task.status 
     });
   }
 
@@ -93,6 +97,16 @@ const Task = () => {
           ) : (
             <>
               <h2 className='text-center mb-4'>{mode === "add" ? "Add New Task" : "Edit Task"}</h2>
+              <div className="mb-4">
+                <label htmlFor="title">Title</label>
+                <Input type="text" name="title" id="title" value={formData.title} placeholder="Title" onChange={handleChange} />
+                {fieldError("title")}
+              </div>
+              <div className="mb-4">
+                <label htmlFor="status">Status</label>
+                <SelectBox onChange={handleChange} name="status" id="status" value={formData.status}/>
+                {fieldError("status")}
+              </div>
               <div className="mb-4">
                 <label htmlFor="description">Description</label>
                 <Textarea type="description" name="description" id="description" value={formData.description} placeholder="Write here.." onChange={handleChange} />

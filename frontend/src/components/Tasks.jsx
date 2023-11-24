@@ -8,12 +8,15 @@ import Tooltip from './utils/Tooltip';
 const Tasks = () => {
 
   const authState = useSelector(state => state.authReducer);
+  const [allTasks,setAllTasks]=useState([]);
   const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
+  const [selectedFilterStatus,setSelectedFilterStatus]=useState("All")
 
   const fetchTasks = useCallback(() => {
     const config = { url: "/tasks", method: "get", headers: { Authorization: authState.token } };
-    fetchData(config, { showSuccessToast: false }).then(data => setTasks(data.tasks));
+    fetchData(config, { showSuccessToast: false }).then(data => {setTasks(data.tasks);setAllTasks(data.tasks)});
+    setSelectedFilterStatus("All")
   }, [authState.token, fetchData]);
 
   useEffect(() => {
@@ -21,6 +24,17 @@ const Tasks = () => {
     fetchTasks();
   }, [authState.isLoggedIn, fetchTasks]);
 
+
+  const filterStatus = (event) => {
+   let filteredTasks = allTasks.filter((task)=>task.status === event.target.value)
+   setSelectedFilterStatus(event.target.value);
+   console.log(event.target.value,filteredTasks)
+    if(event.target.value==="All"){
+      setTasks([...allTasks])
+    }else{
+      setTasks([...filteredTasks])
+    }
+  }
 
   const handleDelete = (id) => {
     const config = { url: `/tasks/${id}`, method: "delete", headers: { Authorization: authState.token } };
@@ -32,19 +46,38 @@ const Tasks = () => {
     <>
       <div className="my-2 mx-auto max-w-[700px] py-4">
 
-        {tasks.length !== 0 && <h2 className='my-2 ml-2 md:ml-0 text-xl'>Your tasks ({tasks.length})</h2>}
+        {allTasks.length !== 0 && <>
+        <h2 className='my-2 ml-2 md:ml-0 text-xl'>Your tasks ({tasks.length})</h2>
+          <div className="mb-4">
+            <label htmlFor="status">Status</label>
+            <select onChange={filterStatus} value={selectedFilterStatus}
+              className={`block w-full mt-2 px-3 py-2 text-gray-600 rounded-[4px] border-2 border-gray-100  focus:border-primary transition outline-none hover:border-gray-300 `} >
+              <option value="All">All</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+         
+        </>}
         {loading ? (
           <Loader />
         ) : (
           <div>
-            {tasks.length === 0 ? (
+            {(allTasks.length === 0 && tasks.length === 0) ? (
 
               <div className='w-[600px] h-[300px] flex items-center justify-center gap-4'>
                 <span>No tasks found</span>
                 <Link to="/tasks/add" className="bg-blue-500 text-white hover:bg-blue-600 font-medium rounded-md px-4 py-2">+ Add new task </Link>
               </div>
 
-            ) : (
+            ) : 
+            tasks.length === 0 ? <>
+            <div className='w-[600px] h-[300px] flex items-center justify-center gap-4'>
+                <span>No tasks found</span>
+              </div>
+            </>:
+            (
               tasks.map((task, index) => (
                 <div key={task._id} className='bg-white my-4 p-4 text-gray-600 rounded-md shadow-md'>
                   <div className='flex'>
