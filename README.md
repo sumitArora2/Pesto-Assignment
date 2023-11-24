@@ -27,6 +27,7 @@ A MERN application for basic tasks management.
 - View tasks
 - Update tasks
 - Delete tasks
+- filter tasks (Status)
 
 ### Developer-side features
 
@@ -161,7 +162,7 @@ Inside backend folder:
 
 - This project
 
-  - Github Repo: https://github.com/aayush301/MERN-task-manager
+  - Github Repo: https://github.com/sumitArora2/Pesto-Assignment
 
 - Official Docs
 
@@ -188,5 +189,5 @@ Inside backend folder:
 
 ## Contact
 
-- Email: aayush5521186@gmail.com
-- Linkedin: https://www.linkedin.com/in/aayush12/
+- Email: arora.sumit857@gmail.com
+- Linkedin: https://www.linkedin.com/in/sumit-arora0606/
